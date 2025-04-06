@@ -2,13 +2,15 @@ import multer from 'multer';
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, './public/temp');
+    cb(null, './public/tempUploads/');
   },
   filename: function (req, file, cb) {
-    cb(null, Date.now() + '-' + file.fieldname + file.size);
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    cb(null, file.fieldname + '-' + uniqueSuffix);
   },
 });
 
-export const upload = multer({
+const upload = multer({
   storage,
 });
+export default upload;

@@ -1,17 +1,20 @@
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import express, { urlencoded } from 'express';
+import express from 'express';
 
-import { errorHandler } from './utils/errorHandler.js';
 import authRoute from './routes/auth.route.js';
+import { logDetails } from './middlewares/logdetails.middleware.js';
+import { errorHandler } from './middlewares/error.middleware.js';
 
 const app = express();
 
 // middlwares
 app.use(cors());
 app.use(express.json());
-app.use(urlencoded({ extended: true, limit: '16kb' }));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static('public'));
 app.use(cookieParser());
+app.use(logDetails);
 
 // route -  /api/healthCheck
 app.get('/api/healthCheck', async (_, res) => {
@@ -24,7 +27,6 @@ app.get('/api/healthCheck', async (_, res) => {
 });
 
 app.use('/api/auth', authRoute);
-
 app.use(errorHandler);
 
 export { app };
